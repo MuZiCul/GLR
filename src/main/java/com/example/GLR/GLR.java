@@ -1,5 +1,6 @@
 package com.example.GLR;
 
+
 public class GLR {
     public static void GLRsingle(String imgPath, double sf){
         double proportion = RGB2HLS.GetRGB(imgPath,sf);

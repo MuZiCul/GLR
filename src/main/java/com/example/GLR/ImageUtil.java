@@ -19,8 +19,7 @@ public class ImageUtil {
      * @return
      */
     public static BufferedImage reSize(File srcImg, double sx, double sy) {
-        String type = getImageType(srcImg);
-        if (type == null || sx < 0 || sy < 0) {
+        if (sx < 0 || sy < 0) {
             return null;
         }
         BufferedImage srcImage;

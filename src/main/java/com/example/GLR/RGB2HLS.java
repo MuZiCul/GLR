@@ -30,14 +30,14 @@ public class RGB2HLS {
         int r,g,b;
         int height,width;
         int gg = 0, rr= 0;
-        bufferedImage= ImageUtil.reSize(new File(imgPath),sf,sf);
+        bufferedImage = ImageUtil.reSize(new File(imgPath),sf,sf);
         assert bufferedImage != null;
         height = bufferedImage.getHeight();
         width = bufferedImage.getWidth();
         for (int y = 0; y<height;y++){
             for (int x = 0; x<width;x++){
                 Color color = new Color(bufferedImage.getRGB(x,y));
-                r=color.getRed();
+                r = color.getRed();
                 g = color.getGreen();
                 b = color.getBlue();
                 HLS hls = rgb2Hls(r,g,b);
