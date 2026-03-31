@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLR - Green Leaf Ratio Analyzer / 绿叶比率分析器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            background: #f6f8fa;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .lang-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+        .lang-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .lang-btn.active {
+            background: #2ea44f;
+            color: white;
+        }
+        .lang-btn:not(.active) {
+            background: #e1e4e8;
+            color: #24292e;
+        }
+        .lang-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #24292e;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            color: #586069;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e1e4e8;
+        }
+        h2 {
+            color: #24292e;
+            margin: 25px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #2ea44f;
+        }
+        h3 {
+            color: #24292e;
+            margin: 20px 0 10px;
+        }
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        code {
+            background: #f6f8fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            color: #e53935;
+        }
+        pre {
+            background: #24292e;
+            color: #e1e4e8;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+        .tree {
+            background: #f6f8fa;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85em;
+            overflow-x: auto;
+        }
+        .highlight {
+            background: #d4edda;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .content-zh, .content-en {
+            display: none;
+        }
+        .content-zh.active, .content-en.active {
+            display: block;
+        }
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e4e8;
+            text-align: center;
+            color: #586069;
+            font-size: 0.9em;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            .lang-switch {
+                top: 10px;
+                right: 10px;
+            }
+            .lang-btn {
+                padding: 8px 15px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="lang-switch">
+        <button class="lang-btn active" onclick="switchLang('zh')">中文</button>
+        <button class="lang-btn" onclick="switchLang('en')">English</button>
+    </div>
+
+    <div class="container">
+        <h1>GLR</h1>
+        <h1 class="subtitle">Green Leaf Ratio Analyzer / 绿叶比率分析器</h1>
+
+        <!-- Description -->
+        <div class="content-zh active">
+            <p>此Java应用程序通过分析图片中HLS（色相、亮度、饱和度）颜色空间内指定绿色范围的像素百分比来计算"绿视率"。</p>
+        </div>
+        <div class="content-en">
+            <p>This Java application analyzes images to calculate the "green visual rate" - the percentage of pixels in an image that fall within a specified green color range in HLS (Hue, Lightness, Saturation) color space.</p>
+        </div>
+
+        <!-- Technical Approach -->
+        <h2>Technical Approach / 技术路线</h2>
+        <ol>
+            <li>
+                <div class="content-zh active"><strong>图像输入</strong>：从指定路径读取图像文件</div>
+                <div class="content-en"><strong>Image Input</strong>: Reads an image file from the specified path</div>
+            </li>
+            <li>
+                <div class="content-zh active"><strong>预处理</strong>：可选地使用缩放因子调整图像大小以提高性能</div>
+                <div class="content-en"><strong>Preprocessing</strong>: Optionally resizes the image using a scaling factor for performance</div>
+            </li>
+            <li>
+                <div class="content-zh active"><strong>色彩转换</strong>：使用自定义实现将每个像素从RGB转换为HLS色彩空间</div>
+                <div class="content-en"><strong>Color Conversion</strong>: Converts each pixel from RGB to HLS color space using a custom implementation</div>
+            </li>
+            <li>
+                <div class="content-zh active"><strong>绿色检测</strong>：基于HLS阈值识别绿色像素</div>
+                <div class="content-en"><strong>Green Detection</strong>: Identifies green pixels based on HLS thresholds:</div>
+                <ul>
+                    <li>
+                        <span class="content-zh active">色调(H)：52-152（HLS中的绿色范围）</span>
+                        <span class="content-en">Hue (H): 52-152 (green range in HLS)</span>
+                    </li>
+                    <li>
+                        <span class="content-zh active">饱和度(S)：0.13-1.0</span>
+                        <span class="content-en">Saturation (S): 0.13-1.0</span>
+                    </li>
+                    <li>
+                        <span class="content-zh active">亮度(L)：0.1-0.9</span>
+                        <span class="content-en">Lightness (L): 0.1-0.9</span>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <div class="content-zh active"><strong>计算</strong>：计算绿色像素与总像素的比率并以百分比表示</div>
+                <div class="content-en"><strong>Calculation</strong>: Computes the ratio of green pixels to total pixels as a percentage</div>
+            </li>
+        </ol>
+
+        <!-- Key Features -->
+        <h2>Key Features / 主要特性</h2>
+        <ul>
+            <li class="content-zh active">自定义RGB到HLS转换算法（GitHub上最早的Java实现之一）</li>
+            <li class="content-en">Custom RGB to HLS conversion algorithm (one of the first Java implementations on GitHub)</li>
+            
+            <li class="content-zh active">可配置的缩放因子，用于高效处理大图像</li>
+            <li class="content-en">Configurable scaling factor for processing large images efficiently</li>
+            
+            <li class="content-zh active">简单的命令行界面</li>
+            <li class="content-en">Simple command-line interface</li>
+            
+            <li class="content-zh active">自包含，依赖极少（仅Java AWT）</li>
+            <li class="content-en">Self-contained with minimal dependencies (Java AWT only)</li>
+        </ul>
+
+        <!-- Project Structure -->
+        <h2>Project Structure / 项目结构</h2>
+        <pre class="tree">GLR/
+├── src/
+│   └── main/
+│       └── java/
+│           └── com/
+│               └── example/
+│                   └── GLR/
+│                       ├── GLR.java              # 主应用程序类 / Main application class
+│                       ├── RGB2HLS.java          # RGB到HLS转换和绿色检测 / RGB to HLS conversion
+│                       ├── ImageUtil.java        # 图像调整大小实用工具 / Image resizing utilities
+│                       └── inputImg/             # 示例测试图像 / Sample test images
+├── pom.xml                               # Maven配置 / Maven configuration
+└── README.html                           # 交互式双语说明 / Interactive bilingual README</pre>
+
+        <!-- Building and Running -->
+        <h2>Building and Running / 构建和运行</h2>
+        
+        <h3 class="content-zh active">前置条件 / Prerequisites</h3>
+        <h3 class="content-en">Prerequisites / 前置条件</h3>
+        <ul>
+            <li class="content-zh active">Java JDK 11 或更高版本</li>
+            <li class="content-en">Java JDK 11 or higher</li>
+            <li class="content-zh active">Maven 3.0+</li>
+            <li class="content-en">Maven 3.0+</li>
+        </ul>
+
+        <h3 class="content-zh active">构建 / Build</h3>
+        <h3 class="content-en">Build / 构建</h3>
+        <pre><code>mvn clean package</code></pre>
+
+        <h3 class="content-zh active">运行 / Run</h3>
+        <h3 class="content-en">Run / 运行</h3>
+        <pre><code>java -jar target/demo-0.0.1-SNAPSHOT.jar</code></pre>
+
+        <div class="note">
+            <div class="content-zh active">
+                <strong>注意：</strong> 应用程序当前在<code>GLR.java</code>中使用硬编码的测试图像路径和缩放因子运行。要分析不同的图像，请在<code>main</code>方法中修改路径和缩放因子，或增强应用程序以接受命令行参数。
+            </div>
+            <div class="content-en">
+                <strong>Note:</strong> The application currently runs with a hardcoded test image path and scaling factor in <code>GLR.java</code>. To analyze different images, modify the path and scaling factor in the <code>main</code> method or enhance the application to accept command-line arguments.
+            </div>
+        </div>
+
+        <!-- Color Space Explanation -->
+        <h2>Color Space Explanation / 色彩空间说明</h2>
+        <div class="content-zh active">
+            <p>此应用程序使用HLS（色相、亮度、饱和度）色彩空间而不是RGB，因为：</p>
+            <ul>
+                <li>色相更能代表色彩感知</li>
+                <li>将色彩信息（色相）与亮度（亮度）和纯度（饱和度）分离</li>
+                <li>定义色彩范围更直观（例如，"绿色"是特定的色相范围）</li>
+            </ul>
+        </div>
+        <div class="content-en">
+            <p>The application uses HLS (Hue, Lightness, Saturation) color space rather than RGB because:</p>
+            <ul>
+                <li>Hue better represents color perception</li>
+                <li>Separation of color information (Hue) from brightness (Lightness) and purity (Saturation)</li>
+                <li>More intuitive for defining color ranges (e.g., "green" is a specific hue range)</li>
+            </ul>
+        </div>
+
+        <!-- Custom Implementation -->
+        <h2>Custom RGB to HLS Implementation / 自定义RGB到HLS实现</h2>
+        <div class="content-zh active">
+            <p><code>RGB2HLS.java</code>文件包含RGB到HLS转换算法的自定义实现。根据项目注释，这是GitHub上最早的此转换的Java实现之一。</p>
+        </div>
+        <div class="content-en">
+            <p>The <code>RGB2HLS.java</code> file contains a custom implementation of the RGB to HLS conversion algorithm. According to the project comments, this was one of the first Java implementations of this conversion available on GitHub.</p>
+        </div>
+
+        <!-- Limitations -->
+        <h2>Limitations and Future Improvements / 局限性和未来改进</h2>
+        <ol>
+            <li class="content-zh active">
+                <strong>硬编码参数</strong>：图像路径和缩放因子当前是硬编码的
+            </li>
+            <li class="content-en">
+                <strong>Hardcoded Parameters</strong>: Image path and scaling factor are currently hardcoded
+            </li>
+            
+            <li class="content-zh active">
+                <strong>无命令行界面</strong>：接受参数以提高灵活性将是有益的
+            </li>
+            <li class="content-en">
+                <strong>No Command-Line Interface</strong>: Would benefit from accepting arguments for flexibility
+            </li>
+            
+            <li class="content-zh active">
+                <strong>错误处理有限</strong>：图像加载的基本错误处理
+            </li>
+            <li class="content-en">
+                <strong>Limited Error Handling</strong>: Basic error handling for image loading
+            </li>
+            
+            <li class="content-zh active">
+                <strong>性能</strong>：可以针对非常大的图像进行优化
+            </li>
+            <li class="content-en">
+                <strong>Performance</strong>: Could be optimized for very large images
+            </li>
+        </ol>
+
+        <!-- License -->
+        <h2>License / 许可证</h2>
+        <div class="content-zh active">
+            <p>此项目仅供教育和实验目的使用。</p>
+        </div>
+        <div class="content-en">
+            <p>This project is available for educational and experimental purposes.</p>
+        </div>
+
+        <div class="footer">
+            <span class="content-zh active">最后更新：2026年3月31日</span>
+            <span class="content-en">Last updated: March 31, 2026</span>
+        </div>
+    </div>
+
+    <script>
+        function switchLang(lang) {
+            const zhElements = document.querySelectorAll('.content-zh');
+            const enElements = document.querySelectorAll('.content-en');
+            const buttons = document.querySelectorAll('.lang-btn');
+            
+            if (lang === 'zh') {
+                zhElements.forEach(el => el.classList.add('active'));
+                enElements.forEach(el => el.classList.remove('active'));
+                buttons[0].classList.add('active');
+                buttons[1].classList.remove('active');
+                document.documentElement.lang = 'zh-CN';
+            } else {
+                enElements.forEach(el => el.classList.add('active'));
+                zhElements.forEach(el => el.classList.remove('active'));
+                buttons[1].classList.add('active');
+                buttons[0].classList.remove('active');
+                document.documentElement.lang = 'en';
+            }
+        }
+    </script>
+</body>
+</html>
